@@ -18,10 +18,9 @@ import java.io.*;
 
 public class N_body extends JPanel implements ActionListener{
 	private String name;
+	private int mass;		//mass
 	private int rx, ry;	//cartesian positions
 	private int vx, vy;	//velocity components
-	private int fx, fy;	//force components
-	private int mass;		//mass
 	private int bodySize;
 	private List<String[]> content;
 	private List<CelestBody> arrList;
@@ -64,18 +63,18 @@ public class N_body extends JPanel implements ActionListener{
 	}
 	private static class CelestBody{
 		private String name;
+		private int mass;		//mass
 		private int rx, ry;	//cartesian positions
 		private int vx, vy;	//velocity components
-		private int mass;		//mass
 		private int bodySize;
 
 		public CelestBody(String name, int mass, int rx, int ry, int vx, int vy, int size){
 			this.name=name;
+			this.mass=mass;	
 			this.rx=rx;
 			this.ry=ry;
 			this.vx=vx;
 			this.vy=vy;
-			this.mass=mass;	
 			this.bodySize=bodySize;
 		}
 		public String giveName(){
@@ -124,6 +123,34 @@ public class N_body extends JPanel implements ActionListener{
 			System.out.println("Error, no file");
 		}
 	}
+	//update velocity and position
+	public void update(double dt){
+		vx += dt*fx/mass;
+		vy += dt*fy/mass;
+		rx += dt*vx;
+		ry += dt*vy;
+	}
+	//return distance between two bodies
+	public double distanceTo(Body b){
+		double dx = rx-b.rx;
+		double dy = ry-b.ry;
+		return Math.sqrt(dx**2 + dy**2)
+	}
+	//set the force to 0 for the next iteration
+	public void resetForce(){
+		fx = 0.0;
+		fy = 0.0;
+	}
+	//calculate net force acting between the bodies
+	public void addForce(Body b){
+		Body a = this;
+		double dx = b.rx - a.rx;
+		double dy = b.ry - a.ry;
+		double distance = Math.sqrt(dx**2 + dy**2);
+		double force = (G*a.mass*b.mass)/(distance**2);
+		a.fx += force*dx/distance;
+		a.fy += force*dy/distance;
+	} 
 	public static void main(String[] args){
 		//Read CSV file from command line
 		String fileName = "nbody_input.text";
@@ -145,63 +172,7 @@ public class N_body extends JPanel implements ActionListener{
 
 	
 
-	//initialize new body
-	// public N_body(double rx, double ry, double vx, double vy, double mass, Color color){
-	// 	this.rx = rx;
-	// 	this.ry = ry;
-	// 	this.vx = vx;
-	// 	this.vy = vy;
-	// 	this.mass = mass;
-	// 	this.color = color;
-	// }
-	// //update velocity and position
-	// public void update(double dt){
-	// 	vx += dt*fx/mass;
-	// 	vy += dt*fy/mass;
-	// 	rx += dt*vx;
-	// 	ry += dt*vy;
-	// }
-	// //return distance between two bodies
-	// public double distanceTo(Body b){
-	// 	double dx = rx-b.rx;
-	// 	double dy = ry-b.ry;
-	// 	return Math.sqrt(dx**2 + dy**2)
-	// }
-	// //set the force to 0 for the next iteration
-	// public void resetForce(){
-	// 	fx = 0.0;
-	// 	fy = 0.0;
-	// }
-	// //calculate net force acting between the bodies
-	// public void addForce(Body b){
-	// 	Body a = this;
-	// 	double EPS = 3E4;	//softening parameter (just to avoid infinities)
-	// 	double dx = b.rx - a.rx;
-	// 	double dy = b.ry - a.ry;
-	// 	double distance = Math.sqrt(dx**2 + dy**2);
-	// 	double force = (G*a.mass*b.mass)/(distance**2 + EPS**2);
-	// 	a.fx += force*dx/distance;
-	// 	a.fy += force*dy/distance;
-	// } 
 	// public String toString(){
 	// 	return " "+rx+", "+ry+", "+vx+", "+vy+", "+mass
-	// }
-	// public void readFile(String[] args){
-	// 	double dataStruc = Double.parseDouble(args[0]);
-	// 	double scale = Double.parseDouble(args[1]);
-	// 	//The remainder of the file is in CSV
-	// 	//each new record will appear on a new line and each field in a record will be separated by commas. Each record defines a celestial body.
-	// 	for (int i = 0; i<args.lenght(); i++){
-			
-	// 		name = 
-	// 		mass = 
-	// 		rx = 
-	// 		ry = 
-	// 		vx = 
-	// 		vy = 
-	// 		size = //Size (in pixels) for rendering
-	// 	}
-	// 	String filename = args[2];
-		
 	// }
 }

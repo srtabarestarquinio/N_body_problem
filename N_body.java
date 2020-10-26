@@ -22,8 +22,6 @@ public class N_body extends JPanel implements ActionListener{
 	private int rx, ry;	//cartesian positions
 	private double vx, vy;	//velocity components
 	private int size;//int to store size
-	// private List<String[]> content;
-	// private List<CelestBody> arrList;
 	private Color color;		//color
 	private double fx, fy; //store forces
 	private static final double G = 6.673e-11; //gravitational constant
@@ -97,27 +95,6 @@ public class N_body extends JPanel implements ActionListener{
 		scale = newScale;
 	}
 
-	// private static class CelestBody{
-	// 	private String name;
-	// 	private int mass;		//mass
-	// 	private int rx, ry;	//cartesian positions
-	// 	private int vx, vy;	//velocity components
-	// 	private int bodySize;
-
-	// 	public CelestBody(String name, int mass, int rx, int ry, int vx, int vy, int size){
-	// 		this.name=name;
-	// 		this.mass=mass;	
-	// 		this.rx=rx;
-	// 		this.ry=ry;
-	// 		this.vx=vx;
-	// 		this.vy=vy;
-	// 		this.bodySize=bodySize;
-	// 	}
-	// 	public String giveName(){
-	// 		return this.name;
-	// 	}
-	// }
-
 	//From Tutorial: Making Shapes on JPanel:
 	public void paintComponent(Graphics g){
 		//super b/c from extended JPanel
@@ -135,11 +112,12 @@ public class N_body extends JPanel implements ActionListener{
 		}
 		tm.start();//start timer
 	}
+	// Requirement 4: Change the position of the bodies
 	public void updateShapes(){
 		int i;
 		for (i=0; i<list.getSize()-1; i++){
 			list.get(i).force(list.get(i+1), scale);//calculate the force 
-			list.get(i).updatePosition();
+			list.get(i).updatePosition();//update velocity with the new force and then update position
 			list.get(i).resetForce();//reset the forces values
 		}
 		if(list.getSize()>1){
@@ -153,36 +131,6 @@ public class N_body extends JPanel implements ActionListener{
 		//built in method, repaints the figure every 5 seconds
 		repaint();
 	}
-
-	// public void readFile(File filename){
-	// 	try{
-	// 		Scanner sc = new Scanner(filename);//make object of scanner class
-	// 		String listType = sc.nextLine();
-	// 		//if first line in file is ArrayList, store values in ArrayList
-	// 		if(listType.equals("ArrayList")){
-	// 			temp = new ArrayList<>();
-	// 		}
-	// 		//if first line is LinkedList, store values in LinkedList
-	// 		else if(listType.equals("LinkedList")){
-	// 			temp = new LinkedList<>();
-	// 		}
-	// 		//excpetion handeling
-	// 		else{
-	// 			System.out.println("Invalid type of list");
-	// 		}
-	// 		tempS = Double.parseDouble(sc.nextLine());//set the temporary scale variable to the information in next line after data structure
-	// 		//remainder of file is in CSV comma separated value format
-	// 		sc.useDelimiter(",");//split the values at the commas
-	// 		while(sc.hasNext()){
-	// 			assert temp!=null;
-	// 			temp.add(new N_body(sc.next(), sc.next(), sc.next(), sc.next(), sc.next(), sc.next(), sc.nextLine()));//add each value of each body
-	// 		}
-	// 		sc.close();//close the file
-	// 	}
-	// 	catch(FileNotFoundException e){
-	// 		System.out.println("File not found");
-	// 	}
-	// }
  
 	public static void main(String[] args){
 		
@@ -190,7 +138,7 @@ public class N_body extends JPanel implements ActionListener{
 		double tempS = 0; //temp scale set to 0
 		//Read CSV file from command line
 		File file = new File(args[0]);//takes inputted file at the command line
-		// readFile(file);
+		//Requirement 1: Read the data file
 		try{
 			Scanner sc = new Scanner(file);//make object of scanner class
 			String listType = sc.nextLine();
@@ -220,8 +168,10 @@ public class N_body extends JPanel implements ActionListener{
 		catch(FileNotFoundException e){
 			System.out.println("File not found");
 		}
+		//Requirement 2: Create, instantiate and maintain a List of celestial bodies
 		N_body nBody = new N_body(temp, tempS);//object of Nbodies class
 
+		// Requirement 3: Render each celestial body
 		//JFrame object
 		JFrame jf = new JFrame();
 		jf.setTitle( "N_body");

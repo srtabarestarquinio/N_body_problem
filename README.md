@@ -1,4 +1,6 @@
-# N_body_problem - Assingment 1 - Data Structures and Algorithms - Rose Tabares
+# N_body_problem 
+## Assingment 1 - Data Structures and Algorithms
+### Rose Tabares
 This assignment tests your knowledge of Lists by requiring that you generate a model for the movement of celestial bodies in 2-dimensions.
 
 Background:

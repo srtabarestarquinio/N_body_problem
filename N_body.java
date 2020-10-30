@@ -17,13 +17,13 @@ import java.io.IOException;
 import java.io.*;
 
 public class N_body extends JPanel implements ActionListener{
-	private String name;	//store name of the body
-	private double mass;		//store mass of body
-	private int rx, ry;	//cartesian positions
-	private double vx, vy;	//velocity components
-	private int size;//int to store size
-	private Color color;		//color
-	private double fx, fy; //store forces
+	private String name;	//string to store name of the body
+	private double mass;	//double to store mass of body in kg
+	private int rx, ry;		//int to store cartesian positions, Initial x and y coordinate on the JFrame
+	private double vx, vy;	//double to store velocity components, Initial x and y direction velocity
+	private int size;		//int to store Size (in pixels) for rendering
+	private Color color;	//color
+	private double fx, fy; //double to store forces
 	private static final double G = 6.673e-11; //gravitational constant
 
 	//Class constructor:
@@ -39,6 +39,41 @@ public class N_body extends JPanel implements ActionListener{
 		Random rand = new Random();
 		color = new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));//create a new random color for each boundary
 
+	}
+	private Lists<N_body> list;//iniate a list called bodies
+	private double scale;
+	public N_body(Lists<N_body> newList, double newScale){
+		list = newList;
+		scale = newScale;
+	}
+	//Force function:
+	//calculate net force acting between the bodies
+	public void force(N_body b, double scale){
+		N_body a = this;
+		double dx = b.rx - a.rx;
+		double dy = b.ry - a.ry;
+		//store distance (square root of sum of each diference in distance in each coordinate squared) in double variable "distance"
+		//Pythagoran theorem: c^2 = a^2 + b^2, distance^2 = dx^2 + dy^2
+		double distance = Math.sqrt((dx * dx) + (dy * dy));
+		//Force = G(m1xm2)/r^2
+		double force = (G*a.mass*b.mass)/((distance * distance)/scale);
+		//set forces in each direction:
+		a.fx += force*dx/distance;
+		a.fy += force*dy/distance;
+	}
+	//set the force to 0 for the next iteration
+	public void resetForce(){
+		fx = 0.0;
+		fy = 0.0;
+	}
+	//update velocity and position
+	public void updatePosition(){
+		//update velocities
+		vx += fx/mass;
+		vy += fy/mass;
+		//update positions
+		rx += vx;
+		ry += vy;
 	}
 	//Get functions:
 	public double getMass(){
@@ -61,38 +96,6 @@ public class N_body extends JPanel implements ActionListener{
 	} 
 	public Color getColor(){
 		return color;
-	}
-
-	//Force function:
-	//calculate net force acting between the bodies
-	public void force(N_body b, double scale){
-		N_body a = this;
-		double dx = b.rx - a.rx;
-		double dy = b.ry - a.ry;
-		//store distance (square root of sum of each diference in distance in each coordinate squared) in double variable "distance"
-		//Pythagoran theorem: c^2 = a^2 + b^2 
-		double distance = Math.sqrt((dx * dx) + (dy * dy));
-		double force = (G*a.mass*b.mass)/((distance * distance)/scale);
-		a.fx += force*dx/distance;
-		a.fy += force*dy/distance;
-	}
-	//set the force to 0 for the next iteration
-	public void resetForce(){
-		fx = 0.0;
-		fy = 0.0;
-	}
-	//update velocity and position
-	public void updatePosition(){
-		vx += fx/mass;
-		vy += fy/mass;
-		rx += vx;
-		ry += vy;
-	}
-	private Lists<N_body> list;//iniate a list called bodies
-	private double scale;
-	public N_body(Lists<N_body> newList, double newScale){
-		list = newList;
-		scale = newScale;
 	}
 
 	//From Tutorial: Making Shapes on JPanel:

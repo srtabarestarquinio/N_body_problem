@@ -107,6 +107,25 @@ class LinkedList<E> implements Lists<E>{
 			return true;
 		}
 	}
+	
+	public void add(E item, int position){
+		if(position == 0){
+			Node<E> node = new Node<E>(item);
+			node.next = head;
+			head = node;
+			++size;
+		}
+		else{
+			Node<E> prev = head;
+			for(int i=0; i<position-1; i++){
+				prev = prev.next;
+			}
+			Node<E> node = new Node<E>(item);
+			node.next = prev.next;
+			prev.next = node;
+			++size;
+		}
+	}
 	//Remove: The function takes in an integer position , which it then both removes and returns the ListNode at that position
 	public E remove(int position){
 		//Error check
@@ -130,5 +149,19 @@ class LinkedList<E> implements Lists<E>{
 			--size;
 			return node.data;
 		}
+	}
+	//Reverse: The function reverses the whole linked list from head to tail. It should take in a parameter ListNode head. And return back the new head once the function is finished.
+	public Node<E> reverse(Node<E> head){
+		Node<E> prev=null;
+		Node<E> curr= head;
+		Node<E> next= null;
+		while(curr!=null){
+			next= curr.next;
+			curr.next=prev;
+			prev=curr;
+			curr=next;
+		}
+		head=prev;
+		return head;
 	}
 }
